@@ -8,6 +8,9 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 public class HotelBookingTest {
 
     WebDriver driver = new ChromeDriver();
@@ -25,13 +28,23 @@ public class HotelBookingTest {
     private WebElement travellerSelection;
 
     @Test
-    public void shouldBeAbleToSearchForHotels() {
+    public void shouldBeAbleToSearchForHotels() throws InterruptedException {
         setDriverPath();
 
         driver.get("https://www.cleartrip.com/");
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         hotelLink.click();
 
         localityTextBox.sendKeys("Indiranagar, Bangalore");
+
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+
+        List<WebElement> locationOptions = driver.findElement(By.id("ui-id-1")).findElements(By.tagName("li"));
+        locationOptions.get(1).click();
+
+        driver.findElement(By.xpath("//a[contains(@class,'ui-state-active')]")).click();
+        Thread.sleep(1000);
+        driver.findElement(By.xpath("//a[contains(@class,'ui-state-active')]")).click();
 
         new Select(travellerSelection).selectByVisibleText("1 room, 2 adults");
         searchButton.click();
