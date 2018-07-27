@@ -1,16 +1,20 @@
 import com.sun.javafx.PlatformUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SignInTest {
 
     WebDriver driver = new ChromeDriver();
 
     @Test
-    public void shouldThrowAnErrorIfSignInDetailsAreMissing() {
+    public void shouldThrowAnErrorIfSignInDetailsAreMissing() throws InterruptedException {
 
         setDriverPath();
 
@@ -19,8 +23,10 @@ public class SignInTest {
 
         driver.findElement(By.linkText("Your trips")).click();
         driver.findElement(By.id("SignIn")).click();
+        driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
 
-        driver.findElement(By.id("signInButton")).click();
+        driver.switchTo().frame("modal_window");
+        driver.findElement(By.cssSelector("button#signInButton.primary")).click();
 
         String errors1 = driver.findElement(By.id("errors1")).getText();
         Assert.assertTrue(errors1.contains("There were errors in your submission"));
